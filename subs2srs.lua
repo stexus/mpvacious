@@ -480,7 +480,8 @@ menu.keybindings = {
     { key = 'f', fn = menu:with_update { function() n_cards = n_cards + 1 end} },
     { key = 'F', fn = menu:with_update { function() n_cards = n_cards - 1 end } },
     { key = 't', fn = menu:with_update { subs_observer.toggle_autocopy } },
-    { key = 'T', fn = menu:with_update { subs_observer.next_autoclip_method } },
+    { key = 't', fn = menu:with_update { subs_observer.next_autoclip_method } },
+    { key = 'T', fn = menu:with_update { subs_observer.toggle_text_selection } },
     { key = 'i', fn = menu:with_update { menu.hints_state.bump } },
     { key = 'p', fn = menu:with_update { load_next_profile } },
     { key = 'ESC', fn = function() menu:close() end },
@@ -495,6 +496,7 @@ function menu:print_header(osd)
     osd:item('Timings: '):text(h.human_readable_time(subs_observer.get_timing('start')))
     osd:item(' to '):text(h.human_readable_time(subs_observer.get_timing('end'))):newline()
     osd:item('Clipboard autocopy: '):text(subs_observer.autocopy_status_str()):newline()
+    osd:item('Text selection: '):text(subs_observer.selection_status_str()):newline()
     osd:item('Active profile: '):text(profiles.active):newline()
     osd:item('Deck: '):text(config.deck_name):newline()
     osd:item('# cards: '):text(n_cards):newline()
@@ -524,6 +526,7 @@ function menu:print_bindings(osd)
         osd:tab():item('m: '):text('Update the last added note '):italics('(+shift to overwrite)'):newline()
         osd:tab():item('t: '):text('Toggle clipboard autocopy'):newline()
         osd:tab():item('T: '):text('Switch to the next clipboard method'):newline()
+        osd:tab():item('shift+t: '):text('Toggle text append'):newline()
         osd:tab():item('p: '):text('Switch to next profile'):newline()
         osd:tab():item('ESC: '):text('Close'):newline()
         osd:italics("Press "):item('i'):italics(" to show global bindings."):newline()

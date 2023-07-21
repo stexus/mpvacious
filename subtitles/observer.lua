@@ -23,6 +23,7 @@ local user_timings = timings.new()
 local append_dialogue = false
 local autoclip_enabled = false
 local autoclip_method = {}
+local text_selection = true
 
 
 ------------------------------------------------------------
@@ -49,7 +50,7 @@ local function append_secondary_sub()
 end
 
 local function start_appending()
-    append_dialogue = true
+    append_dialogue = text_selection
     append_primary_sub()
     append_secondary_sub()
 end
@@ -215,10 +216,10 @@ self.collect = function(n_lines)
             ['end'] = end_sub['end'],
         }
     end
-    if dialogs.is_empty() then
+    if dialogs.is_empty() and text_selection then
         dialogs.insert(Subtitle:now())
     end
-    if secondary_dialogs.is_empty() then
+    if secondary_dialogs.is_empty() and text_selection then
         secondary_dialogs.insert(Subtitle:now('secondary'))
     end
     return Subtitle:new {
@@ -284,6 +285,9 @@ end
 self.recorded_secondary_subs = function()
     return secondary_dialogs.get_subs_list()
 end
+self.selection_status_str = function()
+    return text_selection and 'enabled' or 'disabled'
+end
 
 self.autocopy_status_str = function()
     return string.format(
@@ -314,6 +318,17 @@ self.next_autoclip_method = function()
     autoclip_method.bump()
     notify_autocopy()
 end
+self.toggle_text_selection = function()
+    text_selection = not text_selection
+    if text_selection then
+        start_appending()
+    else
+        dialogs = sub_list.new()
+        secondary_dialogs = sub_list.new()
+    end
+    h.notify(string.format("Text selection has been %s.", self.selection_status_str()))
+end
+
 
 self.init = function(menu, config)
     self.menu = menu
